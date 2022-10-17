@@ -11,6 +11,7 @@
     "development": "vite build --mode development"
   },
   "dependencies": {
+    "@pixi/assets": "^6.5.6",
     "@unocss/inspector": "^0.45.29",
     "@unocss/reset": "^0.45.29",
     "@vueuse/core": "^9.3.1",
@@ -25,7 +26,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.27.0",
-    "@types/node": "^18.11.0",
+    "@types/node": "18.8.0",
     "@vitejs/plugin-vue": "^3.1.2",
     "eslint": "8.25",
     "eslint-plugin-promise": "^6.1.0",

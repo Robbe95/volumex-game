@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Arrow: typeof import('./src/components/icons/Arrow.vue')['default']
+    BaseButton: typeof import('./src/components/BaseButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StartScreen: typeof import('./src/components/game/StartScreen.vue')['default']

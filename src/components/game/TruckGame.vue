@@ -1,6 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import * as PIXI from 'pixi.js'
 import { gsap } from 'gsap'
+import type { Application, Container, Resource, Sprite, Texture, Ticker } from 'pixi.js'
 import cone1 from '@/assets/cone-1.png'
 import cone2 from '@/assets/cone-2.png'
 import cone3 from '@/assets/cone-3.png'
@@ -13,27 +14,35 @@ import street from '@/assets/street.svg'
 
 const emits = defineEmits(['gameDone'])
 const pixiRender = ref()
-const cones = [cone1, cone2, cone3]
-const boxes = [box1, box2, box3]
+const conesLoaded: Texture[] = []
+const boxesLoaded: Texture[] = []
+let truckLoaded: Texture
+let streetLoaded: Texture
 
 const BASE_DROP_SPEED = 8
-let app = null
-let container = null
-let player = null
-let dropTicker = null
+let app: Application | null = null
+let container: Container | null = null
+let player: Sprite | null = null
+let dropTicker: Ticker | null = null
 const score = ref(0)
-const moveObject = (e) => {
+
+const moveObject = (e: any) => {
+  if (!app || !player)
+    return
   const { x, y } = e.data.global
   if (x < (app.renderer.width) && x > 0)
     player.x = x
 }
 
 const followMouse = () => {
+  if (!app)
+    return
+
   app.stage.interactive = true
   app.stage.on('pointermove', moveObject)
 }
 
-const hitItem = (item, player) => {
+const hitItem = (item: Sprite, player: Sprite) => {
   const playerBox = player.getBounds()
   const itemBox = item.getBounds()
   return playerBox.x + 75 < itemBox.x + itemBox.width
@@ -43,8 +52,11 @@ const hitItem = (item, player) => {
 }
 
 const setupRoad = () => {
-  const streetSprite = new PIXI.Sprite(PIXI.Texture.from(street))
-  const streetSpriteDuplicate = new PIXI.Sprite(PIXI.Texture.from(street))
+  if (!app || !container)
+    return
+
+  const streetSprite = new PIXI.Sprite(streetLoaded)
+  const streetSpriteDuplicate = new PIXI.Sprite(streetLoaded)
   streetSprite.y = 0
   streetSpriteDuplicate.y = -app.renderer.height
   streetSprite.x = app.renderer.width / 2
@@ -59,6 +71,9 @@ const setupRoad = () => {
   container.addChild(streetSpriteDuplicate)
 
   roadTicker.add((delta) => {
+    if (!app)
+      return
+
     streetSprite.y += dropSpeed
     streetSpriteDuplicate.y += dropSpeed
     if (streetSprite.y >= app.renderer.height)
@@ -70,9 +85,12 @@ const setupRoad = () => {
 }
 
 const dropCone = () => {
-  const randomImage = cones[Math.floor(Math.random() * cones.length)]
+  if (!app || !container)
+    return
+
+  const randomImage = conesLoaded[Math.floor(Math.random() * conesLoaded.length)]
   const randomPosition = Math.floor(Math.random() * app.renderer.width)
-  const item = new PIXI.Sprite(PIXI.Texture.from(randomImage))
+  const item = new PIXI.Sprite(randomImage)
   const itemTicker = new PIXI.Ticker()
   item.x = randomPosition
   item.y = -200
@@ -83,6 +101,8 @@ const dropCone = () => {
   const dropSpeed = BASE_DROP_SPEED
   container.addChild(item)
   itemTicker.add((delta) => {
+    if (!app || !container || !player)
+      return
     if (item.y < app.renderer.height + 50)
       item.y += dropSpeed
     if (item.y >= app.renderer.height + 50) {
@@ -99,9 +119,12 @@ const dropCone = () => {
 }
 
 const dropBox = () => {
-  const randomImage = boxes[Math.floor(Math.random() * boxes.length)]
+  if (!app || !container || !player)
+    return
+
+  const randomImage = boxesLoaded[Math.floor(Math.random() * boxesLoaded.length)]
   const randomPosition = Math.floor(Math.random() * app.renderer.width)
-  const item = new PIXI.Sprite(PIXI.Texture.from(randomImage))
+  const item = new PIXI.Sprite(randomImage)
   const boxTicker = new PIXI.Ticker()
   item.x = randomPosition
   item.y = -200
@@ -112,6 +135,9 @@ const dropBox = () => {
   const dropSpeed = BASE_DROP_SPEED
   container.addChild(item)
   boxTicker.add((delta) => {
+    if (!app || !container || !player)
+      return
+
     if (item.y < app.renderer.height + 50)
       item.y += dropSpeed
     if (item.y >= app.renderer.height + 50) {
@@ -131,7 +157,6 @@ const dropBox = () => {
 const loadPixi = () => {
   app = new PIXI.Application({
     backgroundAlpha: 0,
-    autoResize: true,
     width: pixiRender.value.offsetWidth,
     height: pixiRender.value.offsetHeight,
   })
@@ -139,8 +164,7 @@ const loadPixi = () => {
   container = new PIXI.Container()
   container.sortableChildren = true
   app.stage.addChild(container)
-  const texture = PIXI.Texture.from(truck)
-  player = new PIXI.Sprite(texture)
+  player = new PIXI.Sprite(truckLoaded)
   player.anchor.set(0.5, 1)
   player.x = app.renderer.width / 2
   player.y = app.renderer.height
@@ -172,18 +196,57 @@ const loadPixi = () => {
   setupRoad()
 }
 const resize = () => {
+  if (!app)
+    return
+
   app.renderer.resize(pixiRender.value.offsetWidth, pixiRender.value.offsetHeight)
 }
 const ticker = PIXI.Ticker.shared
 
 const stopPixi = () => {
-  dropTicker.destroy()
+  dropTicker?.destroy()
   ticker.stop()
-  app.destroy(true)
+  app?.destroy(true)
   pixiRender.value.innerHTML = ''
 }
 
-onMounted(() => {
+const loadTextures = async () => {
+  const box1Texture = PIXI.Texture.from(box1, { resourceOptions: { autoLoad: false } })
+  const box2Texture = PIXI.Texture.from(box2, { resourceOptions: { autoLoad: false } })
+  const box3Texture = PIXI.Texture.from(box3, { resourceOptions: { autoLoad: false } })
+
+  const cone1Texture = PIXI.Texture.from(cone1, { resourceOptions: { autoLoad: false } })
+  const cone2Texture = PIXI.Texture.from(cone2, { resourceOptions: { autoLoad: false } })
+  const cone3Texture = PIXI.Texture.from(cone3, { resourceOptions: { autoLoad: false } })
+
+  const truckTexture = PIXI.Texture.from(truck, { resourceOptions: { autoLoad: false } })
+  const streetTexture = PIXI.Texture.from(street, { resourceOptions: { autoLoad: false } })
+
+  await box1Texture.baseTexture.resource.load()
+  await box2Texture.baseTexture.resource.load()
+  await box3Texture.baseTexture.resource.load()
+
+  await cone1Texture.baseTexture.resource.load()
+  await cone2Texture.baseTexture.resource.load()
+  await cone3Texture.baseTexture.resource.load()
+
+  await truckTexture.baseTexture.resource.load()
+  await streetTexture.baseTexture.resource.load()
+
+  boxesLoaded.push(box1Texture)
+  boxesLoaded.push(box2Texture)
+  boxesLoaded.push(box3Texture)
+
+  conesLoaded.push(cone1Texture)
+  conesLoaded.push(cone2Texture)
+  conesLoaded.push(cone3Texture)
+
+  truckLoaded = truckTexture
+  streetLoaded = streetTexture
+}
+
+onMounted(async () => {
+  await loadTextures()
   loadPixi()
   window.onresize = resize
 })
