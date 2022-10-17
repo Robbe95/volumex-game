@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
     Arrow: typeof import('./src/components/icons/Arrow.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StartScreen: typeof import('./src/components/game/StartScreen.vue')['default']
     TestComponent: typeof import('./src/components/TestComponent.vue')['default']
     TruckGame: typeof import('./src/components/game/TruckGame.vue')['default']
   }

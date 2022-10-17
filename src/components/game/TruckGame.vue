@@ -11,6 +11,7 @@ import box3 from '@/assets/box-3.png'
 import truck from '@/assets/truck.png'
 import street from '@/assets/street.svg'
 
+const emits = defineEmits(['gameDone'])
 const pixiRender = ref()
 const cones = [cone1, cone2, cone3]
 const boxes = [box1, box2, box3]
@@ -168,20 +169,37 @@ const loadPixi = () => {
     }
   })
   dropTicker.start()
+  setupRoad()
 }
 const resize = () => {
   app.renderer.resize(pixiRender.value.offsetWidth, pixiRender.value.offsetHeight)
 }
+const ticker = PIXI.Ticker.shared
+
+const stopPixi = () => {
+  dropTicker.destroy()
+  ticker.stop()
+  app.destroy(true)
+  pixiRender.value.innerHTML = ''
+}
+
 onMounted(() => {
   loadPixi()
-  setupRoad()
   window.onresize = resize
 })
+
+const stopClicked = () => {
+  stopPixi()
+  emits('gameDone', score.value)
+}
 </script>
 
 <template>
-  <div class="flex items-center justify-center flex-col h-100vh w-100vw bg-#1A1724 overflow-hidden">
+  <div class="">
     <div ref="pixiRender" class="absolute top-0 left-0 w-100vw h-screen z-10" />
+    <button class="px-4 py-2 bg-red-500 absolute top-10 right-10 z-20" @click="stopClicked">
+      Stop
+    </button>
     <div class="radial-background -translate-x-1/2 transform bottom-0 left-1/2 absolute w-1/2 h-1/2 " />
     <!-- <div class="full-road road-animation h-200vh w-20">
       <img ref="road" src="@/assets/street.svg" class="left-1/2 absolute transform -translate-x-1/2 h-screen -translate-y-full">
