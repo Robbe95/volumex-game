@@ -90,13 +90,20 @@ const startGame = () => {
       opacity: 0,
     },
     '<',
-  ).to(
-    '.truck-wrapper',
-    {
-      y: '-200vh',
-      duration: 2,
-    },
-  ).add(() => emits('startGame'))
+  )
+    .to(
+      '.truck-wrapper',
+      {
+        y: '80',
+        duration: 1,
+      },
+    ).to(
+      '.truck-wrapper',
+      {
+        y: '-200vh',
+        duration: 2,
+      },
+    ).add(() => emits('startGame'))
 }
 
 onMounted(() => {
