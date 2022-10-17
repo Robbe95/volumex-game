@@ -23,11 +23,10 @@ let dropTicker = null
 const score = ref(0)
 const moveObject = (e) => {
   const { x, y } = e.data.global
-  if (x < (app.renderer.width - (player.width / 2)) && x > 0)
+  if (x < (app.renderer.width) && x > 0)
     player.x = x
 }
-const congratulate = () => {
-}
+
 const followMouse = () => {
   app.stage.interactive = true
   app.stage.on('pointermove', moveObject)
@@ -68,6 +67,7 @@ const setupRoad = () => {
   })
   roadTicker.start()
 }
+
 const dropCone = () => {
   const randomImage = cones[Math.floor(Math.random() * cones.length)]
   const randomPosition = Math.floor(Math.random() * app.renderer.width)
@@ -113,9 +113,6 @@ const dropBox = () => {
   boxTicker.add((delta) => {
     if (item.y < app.renderer.height + 50)
       item.y += dropSpeed
-      // item.rotation += 0.02
-      // dropSpeed += 0.2
-
     if (item.y >= app.renderer.height + 50) {
       boxTicker.destroy()
       container.removeChild(item)
@@ -129,6 +126,7 @@ const dropBox = () => {
   })
   boxTicker.start()
 }
+
 const loadPixi = () => {
   app = new PIXI.Application({
     backgroundAlpha: 0,
