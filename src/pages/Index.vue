@@ -14,6 +14,6 @@ useHead({
 
 <template>
   <div>
-    <TestComponent />
+    <TruckGame />
   </div>
 </template>
