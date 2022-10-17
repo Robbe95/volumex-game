@@ -143,6 +143,7 @@ const loadPixi = () => {
   player.anchor.set(0.5, 1)
   player.x = app.renderer.width / 2
   player.y = app.renderer.height
+  player.zIndex = 10
   player.scale.set(0.4, 0.4)
   container.addChild(player)
   followMouse()
