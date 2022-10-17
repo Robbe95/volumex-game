@@ -4,11 +4,17 @@ import { gsap } from 'gsap'
 import cone1 from '@/assets/cone-1.png'
 import cone2 from '@/assets/cone-2.png'
 import cone3 from '@/assets/cone-3.png'
+import box1 from '@/assets/box-1.png'
+import box2 from '@/assets/box-2.png'
+import box3 from '@/assets/box-3.png'
+
 import truck from '@/assets/truck.png'
 import street from '@/assets/street.svg'
 
 const pixiRender = ref()
 const cones = [cone1, cone2, cone3]
+const boxes = [box1, box2, box3]
+
 const BASE_DROP_SPEED = 8
 let app = null
 let container = null
@@ -30,9 +36,9 @@ const followMouse = () => {
 const hitItem = (item, player) => {
   const playerBox = player.getBounds()
   const itemBox = item.getBounds()
-  return playerBox.x < itemBox.x + itemBox.width
-    && playerBox.x + playerBox.width > itemBox.x
-    && playerBox.y < itemBox.y + itemBox.height / 2
+  return playerBox.x + 75 < itemBox.x + itemBox.width
+    && playerBox.x + playerBox.width - 75 > itemBox.x
+    && playerBox.y + 40 < itemBox.y + itemBox.height / 2
     && playerBox.height + playerBox.y > itemBox.y
 }
 
@@ -78,27 +84,51 @@ const dropCone = () => {
   itemTicker.add((delta) => {
     if (item.y < app.renderer.height + 50)
       item.y += dropSpeed
-      // item.rotation += 0.02
-      // dropSpeed += 0.2
-
     if (item.y >= app.renderer.height + 50) {
       itemTicker.destroy()
       container.removeChild(item)
-      score.value = 0
     }
     if (hitItem(item, player)) {
       itemTicker.destroy()
       container.removeChild(item)
-      score.value++
-      if (score.value === 3)
-        congratulate()
-        // dropTicker.destroy()
-        // container.removeChild(player)
+      score.value--
     }
   })
   itemTicker.start()
 }
 
+const dropBox = () => {
+  const randomImage = boxes[Math.floor(Math.random() * boxes.length)]
+  const randomPosition = Math.floor(Math.random() * app.renderer.width)
+  const item = new PIXI.Sprite(PIXI.Texture.from(randomImage))
+  const boxTicker = new PIXI.Ticker()
+  item.x = randomPosition
+  item.y = -200
+  item.zIndex = 1
+  item.scale.set(0.1, 0.1)
+  item.anchor.set(0.5, 1)
+  item.rotation = Math.floor(Math.random() * 360)
+  const dropSpeed = BASE_DROP_SPEED
+  container.addChild(item)
+  boxTicker.add((delta) => {
+    if (item.y < app.renderer.height + 50)
+      item.y += dropSpeed
+      // item.rotation += 0.02
+      // dropSpeed += 0.2
+
+    if (item.y >= app.renderer.height + 50) {
+      boxTicker.destroy()
+      container.removeChild(item)
+      score.value = 0
+    }
+    if (hitItem(item, player)) {
+      boxTicker.destroy()
+      container.removeChild(item)
+      score.value++
+    }
+  })
+  boxTicker.start()
+}
 const loadPixi = () => {
   app = new PIXI.Application({
     backgroundAlpha: 0,
@@ -119,13 +149,23 @@ const loadPixi = () => {
   container.addChild(player)
   followMouse()
   dropCone()
-  let seconds = 0
+  dropBox()
+
+  let coneSeconds = 0
+  let boxSeconds = 0
+
   dropTicker = new PIXI.Ticker()
   dropTicker.add((delta) => {
-    seconds += 1 / 60
-    if (seconds >= 1) {
-      seconds = 0
+    coneSeconds += 1 / 60
+    boxSeconds += 1 / 60
+
+    if (coneSeconds >= 1) {
+      coneSeconds = 0
       dropCone()
+    }
+    if (boxSeconds >= 2) {
+      boxSeconds = 0
+      dropBox()
     }
   })
   dropTicker.start()
