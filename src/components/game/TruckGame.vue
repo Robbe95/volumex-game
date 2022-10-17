@@ -40,7 +40,7 @@ const setupRoad = () => {
   const streetSprite = new PIXI.Sprite(PIXI.Texture.from(street))
   const streetSpriteDuplicate = new PIXI.Sprite(PIXI.Texture.from(street))
   streetSprite.y = 0
-  streetSpriteDuplicate.y = -streetSprite.height
+  streetSpriteDuplicate.y = -app.renderer.height
   streetSprite.x = app.renderer.width / 2
   streetSpriteDuplicate.x = app.renderer.width / 2
   streetSprite.zIndex = -10
@@ -54,7 +54,6 @@ const setupRoad = () => {
 
   roadTicker.add((delta) => {
     streetSprite.y += dropSpeed
-
     streetSpriteDuplicate.y += dropSpeed
     if (streetSprite.y >= app.renderer.height)
       streetSprite.y = -streetSprite.height
