@@ -7,7 +7,7 @@ const onClick = () => {
 </script>
 
 <template>
-  <button class="min-w-60 px-8 py-4 bg-#E00A4D rounded-xl max-w-max button-shadow hover:translate-y-4px transition-all" @click="onClick">
+  <button class="min-w-60 px-8 py-4 bg-#E00A4D rounded-xl max-w-max button-shadow hover:translate-y-4px transition-all font-bold" @click="onClick">
     <slot />
   </button>
 </template>

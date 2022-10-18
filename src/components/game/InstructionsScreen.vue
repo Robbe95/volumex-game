@@ -48,7 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="py-40 w-full h-full flex flex-col justify-between items-center text-center text-white z-50">
+  <section class="py-20 xl:py-40 w-full h-full flex flex-col justify-between items-center text-center text-white z-50">
     <div class="flex flex-col gap-8">
       <h1 class="title">
         Instructies

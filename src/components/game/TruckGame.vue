@@ -15,6 +15,10 @@ import street from '@/assets/street.svg'
 
 // #endregion
 
+// #region Countdown timer
+
+// #endregion
+
 // #region Variables
 const emits = defineEmits(['gameDone'])
 const pixiRender = ref()
@@ -25,7 +29,7 @@ let streetLoaded: Texture
 const ticker = PIXI.Ticker.shared
 
 const BASE_DROP_SPEED = 8
-const COUNTDOWN_AMOUNT_IN_SECONDS = 60
+const COUNTDOWN_AMOUNT_IN_SECONDS = 45
 const BASE_DROP_AMOUNT_BOXES = 0.9
 const BASE_DROP_AMOUNT_CONES = 0.4
 
@@ -36,7 +40,7 @@ let dropTicker: Ticker | null = null
 const score = ref(0)
 const countdown = ref(COUNTDOWN_AMOUNT_IN_SECONDS)
 const timePassed = computed(() => COUNTDOWN_AMOUNT_IN_SECONDS - countdown.value)
-const fallingSpeed = computed(() => BASE_DROP_SPEED + timePassed.value * 0.3)
+const fallingSpeed = computed(() => BASE_DROP_SPEED + timePassed.value * 0.4)
 
 // #endregion
 
@@ -276,9 +280,6 @@ const stopGame = () => {
   emits('gameDone', score.value)
 }
 
-// #endregion
-
-// #region Countdown timer
 const tickCountdown = () => {
   countdown.value--
   if (countdown.value > 0)
@@ -292,25 +293,31 @@ tickCountdown()
 </script>
 
 <template>
-  <div class="">
-    <div ref="pixiRender" class="absolute top-0 left-0 w-100vw h-screen z-10" />
+  <div class="overflow-hidden">
+    {{ countdown }}
+    <div ref="pixiRender" class="absolute top-0 left-0 w-100vw h-screen z-10 overflow-hidden" />
     <!-- <button class="px-4 py-2 bg-red-500 absolute top-10 right-10 z-20" @click="stopGame">
       Stop
     </button> -->
-    <div class="radial-background -translate-x-1/2 transform bottom-0 left-1/2 absolute w-1/2 h-1/2 " />
+    <div class="radial-background -translate-x-1/2 transform bottom-0 left-1/2 absolute w-1/2 h-1/2 overflow-hidden" />
     <!-- <div class="full-road road-animation h-200vh w-20">
       <img ref="road" src="@/assets/street.svg" class="left-1/2 absolute transform -translate-x-1/2 h-screen -translate-y-full">
       <img ref="road" src="@/assets/street.svg" class="left-1/2 absolute transform -translate-x-1/2 h-screen">
     </div> -->
-    <div class="absolute top-12 right-12 flex gap-8">
+    <div class="fixed top-12 right-12 flex gap-8 z-50">
       <div
-        class=" py-2 px-4 bg-#2D2D46 rounded-2xl font-800 text-4xl"
-        :class="[countdown <= 10 ? 'animate-tada animate-repeat-3 animate-pulse text-#E00A4D' : 'text-white']"
+        class="py-2 px-4 bg-#2D2D46 rounded-2xl font-800 text-4xl z-50"
+        :class="[countdown <= 10 ? 'animate-tada text-#E00A4D' : 'text-white']"
       >
         00:{{ countdown.toLocaleString('be-NL', { minimumIntegerDigits: 2, useGrouping: false }) }}
       </div>
-      <div class="text-white py-2 px-4 bg-#2D2D46 rounded-2xl font-800 text-4xl">
-        Score: {{ score.toLocaleString('be-NL', { minimumIntegerDigits: 2, useGrouping: false }) }}
+      <div class="text-white py-2 px-4 bg-#2D2D46 rounded-2xl font-800 text-4xl min-w-50 flex justify-between">
+        <span>
+          Score:
+        </span>
+        <span>
+          {{ score.toLocaleString('be-NL', { minimumIntegerDigits: 2, useGrouping: false }) }}
+        </span>
       </div>
     </div>
   </div>

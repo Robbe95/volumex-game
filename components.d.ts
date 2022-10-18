@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
     Arrow: typeof import('./src/components/icons/Arrow.vue')['default']
     BaseButton: typeof import('./src/components/BaseButton.vue')['default']
     copy: typeof import('./src/components/game/FormScreen copy.vue')['default']
+    EndScreen: typeof import('./src/components/game/EndScreen.vue')['default']
     FormScreen: typeof import('./src/components/game/FormScreen.vue')['default']
     InstructionIconBlock: typeof import('./src/components/game/instructions/InstructionIconBlock.vue')['default']
     InstructionsScreen: typeof import('./src/components/game/InstructionsScreen.vue')['default']

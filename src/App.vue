@@ -6,6 +6,37 @@
 </template>
 
 <style>
+@font-face {
+  font-family: "Jakarta";
+  src: url(@/assets/fonts/PlusJakarta/PlusJakartaSans-Regular.ttf)
+    format("truetype");
+}
+
+@font-face {
+  font-family: "Jakarta";
+  src: url(@/assets/fonts/PlusJakarta/PlusJakartaSans-Medium.ttf)
+    format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Jakarta";
+  src: url(@/assets/fonts/PlusJakarta/PlusJakartaSans-Bold.ttf)
+    format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Jakarta";
+  src: url(@/assets/fonts/PlusJakarta/PlusJakartaSans-ExtraBold.ttf)
+    format("truetype");
+  font-weight: 800;
+}
+
+* {
+  font-family: "Jakarta", sans-serif;
+}
+
 .fade-enter-active {
   transition: all 0.3s ease-out;
 }

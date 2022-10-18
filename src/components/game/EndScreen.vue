@@ -1,7 +1,28 @@
 <script setup lang="ts">
 import gsap from 'gsap'
-import { useDeviceOrientation } from '@vueuse/core'
-const emits = defineEmits(['startGame'])
+interface Props {
+  score: number
+}
+const props = defineProps<Props>()
+const emits = defineEmits(['restart'])
+
+let counter = 0
+let delay = 10
+const x = props.score / 2
+const countedUp = ref(0)
+
+const countUp = () => {
+  countedUp.value++
+  delay = ((x - countedUp.value) * 4) + 100
+  counter++
+  if (counter < props.score) {
+    setTimeout(() => {
+      countUp()
+    }, delay)
+  }
+}
+
+countUp()
 /* Setup global timelines */
 const transitionInTl = gsap.timeline({
   duration: 1,
@@ -57,7 +78,7 @@ const truckRoadMovement = () => {
     )
 }
 
-const startGame = () => {
+const restart = () => {
   movementTl.pause()
   startGameTl.to(
     '.truck-wrapper',
@@ -86,7 +107,7 @@ const startGame = () => {
         duration: 2,
         ease: 'power1.in',
       },
-    ).add(() => emits('startGame'))
+    ).add(() => emits('restart'))
 }
 
 onMounted(() => {
@@ -97,16 +118,24 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-row items-center justify-center overflow-hidden relative h-full w-full">
-    <section class="z-20 text-white text-center flex flex-col gap-8 start-info mb-40 xl:mb-0">
-      <h1 class="title">
-        Win jij duo tickets?
+    <section class="z-20 text-white text-center flex flex-col gap-8 start-info mb-40 xl:mb-0 justify-center items-center">
+      <h1 class="title flex text-center">
+        <div>
+          Je hebt
+        </div>
+        <div class="text-#00DEFF min-w-26">
+          {{ countedUp }}
+        </div>
+        <div>
+          pakketjes opgehaald.
+        </div>
       </h1>
       <p class="max-w-60ch">
-        Speel de beste score en win duo tickets naar de Volumex Belgian Truck Grand Prix 2023!
+        Dit plaatst jou voorlopig op de 6de plaats! Goed gedaan!
       </p>
       <div>
-        <BaseButton @click="startGame">
-          Start het spel
+        <BaseButton @click="restart">
+          Opnieuw proberen?
         </BaseButton>
       </div>
     </section>
