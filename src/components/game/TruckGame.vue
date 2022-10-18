@@ -26,8 +26,8 @@ const ticker = PIXI.Ticker.shared
 
 const BASE_DROP_SPEED = 8
 const COUNTDOWN_AMOUNT_IN_SECONDS = 60
-const BASE_DROP_AMOUNT_BOXES = 0.5
-const BASE_DROP_AMOUNT_CONES = 0.2
+const BASE_DROP_AMOUNT_BOXES = 0.9
+const BASE_DROP_AMOUNT_CONES = 0.4
 
 let app: Application | null = null
 let container: Container | null = null
@@ -36,7 +36,7 @@ let dropTicker: Ticker | null = null
 const score = ref(0)
 const countdown = ref(COUNTDOWN_AMOUNT_IN_SECONDS)
 const timePassed = computed(() => COUNTDOWN_AMOUNT_IN_SECONDS - countdown.value)
-const fallingSpeed = computed(() => BASE_DROP_SPEED + timePassed.value * 0.4)
+const fallingSpeed = computed(() => BASE_DROP_SPEED + timePassed.value * 0.3)
 
 // #endregion
 
