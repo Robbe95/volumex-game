@@ -12,12 +12,6 @@ const movementTl = gsap.timeline(
     repeatRefresh: true,
   },
 )
-const roadTl = gsap.timeline(
-  {
-    repeat: -1,
-    ease: 'none',
-  },
-)
 
 const startGameTl = gsap.timeline()
 
@@ -63,18 +57,6 @@ const truckRoadMovement = () => {
     )
 }
 
-const roadMovement = () => {
-  roadTl
-    .to(
-      '.road',
-      {
-        y: '50vh',
-        ease: 'none',
-        duration: 2,
-      },
-    )
-}
-
 const startGame = () => {
   movementTl.pause()
   startGameTl.to(
@@ -102,6 +84,7 @@ const startGame = () => {
       {
         y: '-200vh',
         duration: 2,
+        ease: 'power1.in',
       },
     ).add(() => emits('startGame'))
 }
@@ -109,14 +92,13 @@ const startGame = () => {
 onMounted(() => {
   truckMovingIn()
   truckRoadMovement()
-  roadMovement()
 })
 </script>
 
 <template>
   <div class="w-full flex flex-row items-center justify-center overflow-hidden relative h-full w-full">
     <section class="z-20 text-white text-center flex flex-col gap-8 start-info">
-      <h1 class="text-6xl font-bold">
+      <h1 class="title">
         Win jij duo tickets?
       </h1>
       <p class="max-w-60ch">
@@ -130,10 +112,6 @@ onMounted(() => {
     </section>
     <div class="truck-wrapper absolute bottom-0 z-20 pointer-events-none">
       <img class="truck" src="@/assets/full-truck.png">
-    </div>
-    <div class="road w-auto -translate-y-50vh absolute left-1/2 -translate-x-1/2 transform z-0">
-      <img class="h-screen " src="@/assets/street.svg">
-      <img class="h-screen" src="@/assets/street.svg">
     </div>
   </div>
 </template>
